@@ -13,18 +13,49 @@
 
 #include "particle_filter.h"
 #include "helper_functions.h"
+#include "map.h"
 
 using namespace std;
 
 int TestParticleFilter();
 
 int main() {
-  //test resampling method
+  //test map landmarks filtering according to sensor range
+  Particle particle;
+  particle.x = 1;
+  particle.y = 1;
+
+  Map::MapLandmark l1;
+  l1.x = 1;
+  l1.y = 10;
+
+  Map::MapLandmark l2;
+  l2.x = 1;
+  l2.y = 30;
+
+  Map::MapLandmark l3;
+  l3.x = 1;
+  l3.y = 80;
+
+  Map map;
+  map.landmark_list_.push_back(l1);
+  map.landmark_list_.push_back(l2);
+  map.landmark_list_.push_back(l3);
+
+  double sensor_range = 50;
+
   ParticleFilter pf;
-  double sigma_pos [3] = {0.3, 0.3, 0.01};
-  pf.init(6, 3, 0.5, sigma_pos);
+  std::vector<Map::MapLandmark> landmarks = pf.FilterMapLandmarks(particle, map, sensor_range);
+
+  //should output 2
+  std::cout << landmarks.size() << std::endl;
+
+//  double sigma_pos [3] = {0.3, 0.3, 0.01};
+//  pf.init(6, 3, 0.5, sigma_pos);
+
 //  pf.resample();
-  pf.prediction(0.9, sigma_pos, 10, 0.7);
+
+//  pf.prediction(0.9, sigma_pos, 10, 0.7);
 
 //  //particle position and heading angle in map-coordinates
 //  Particle particle;

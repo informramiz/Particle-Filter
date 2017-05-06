@@ -107,6 +107,29 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   3.33. Note that you'll need to switch the minus sign in that equation to a plus to account 
 	//   for the fact that the map's y-axis actually points downwards.)
 	//   http://planning.cs.uiuc.edu/node99.html
+
+std::vector<Map::MapLandmark> ParticleFilter::FilterMapLandmarks(const Particle& particle,
+                                                                 const Map &map_landmarks,
+                                                                 double sensor_range) {
+  //create container to hold filtered map landmarks
+  std::vector<Map::MapLandmark> filtered_map_landmarks;
+
+  size_t map_landmars_count = map_landmarks.landmark_list_.size();
+
+  //go throuh each map landmark and filter the ones that are not in range from give particle
+  for (int i = 0; i < map_landmars_count; ++i) {
+    Map::MapLandmark landmark = map_landmarks.landmark_list_[i];
+
+    //calculate distance between particle and map landmark
+    double distance = dist(particle.x, particle.y, landmark.x, landmark.y);
+
+    //check if distance in sensor range, then add to list
+    if (distance <= sensor_range) {
+      filtered_map_landmarks.push_back(landmark);
+    }
+  }
+
+  return filtered_map_landmarks;
 }
 
 LandmarkObs ParticleFilter::TransformToMapCoordinates(const Particle & particle, LandmarkObs observation) {

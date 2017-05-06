@@ -10,6 +10,7 @@
 #define PARTICLE_FILTER_H_
 
 #include "helper_functions.h"
+#include "map.h"
 
 struct Particle {
 
@@ -115,6 +116,18 @@ public:
 	 * @param observation, observation to be transform to map coordinates from vehicle coordinates
 	 */
 	LandmarkObs TransformToMapCoordinates(const Particle & particle, LandmarkObs observation);
+
+	/**
+	 * Filters landmarks according to sensor range given.
+	 *
+	 * @param particle        position of particle on map from which to check distance of landmark
+	 * @param map_landmarks   list of map landmarks
+	 * @param sensor_range    range of sensor in meters
+	 * @return  std::vector<MapLandmark>, list of filtered map landmarks
+	 */
+	std::vector<Map::MapLandmark> FilterMapLandmarks(const Particle& particle,
+	                                                const Map& map_landmarks,
+	                                                double sensor_range);
 private:
 
 	// Number of particles to draw

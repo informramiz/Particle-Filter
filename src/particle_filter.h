@@ -95,6 +95,14 @@ public:
 		return is_initialized;
 	}
 
+	/**
+	 * @param x, x position of observation on map coordinates
+	 * @param y, y position of observation on map coordinates
+	 * @param ux, x position of landmark on map coordinates
+	 * @param uy, y position of landmark on map coordinates
+	 * @param std_ux, uncertainty/standard deviation in x position of landmark
+	 * @param std_uy, uncertainty/standard deviation in y position of landmark
+	 */
 	double CalculateLikelihood(double x, double y,
 	                           double ux, double uy,
 	                           double std_ux, double std_uy);

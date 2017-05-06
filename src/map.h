@@ -11,13 +11,13 @@
 class Map {
 public:
 	
-	struct single_landmark_s{
+	struct MapLandmark{
 		int id ; // Landmark ID
 		float x; // Landmark x-position in the map (global coordinates)
 		float y; // Landmark y-position in the map (global coordinates)
 	};
 
-	std::vector<single_landmark_s> landmark_list_ ; // List of landmarks in the map
+	std::vector<MapLandmark> landmark_list_ ; // List of landmarks in the map
 
 };
 

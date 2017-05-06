@@ -111,7 +111,7 @@ inline bool read_map_data(std::string filename, Map& map) {
 		iss_map >> id_i;
 
 		// Declare single_landmark:
-		Map::single_landmark_s single_landmark_temp;
+		Map::MapLandmark single_landmark_temp;
 
 		// Set values
 		single_landmark_temp.id = id_i;

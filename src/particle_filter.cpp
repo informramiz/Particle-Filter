@@ -86,6 +86,16 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   http://planning.cs.uiuc.edu/node99.html
 }
 
+double ParticleFilter::CalculateLikelihood(double x, double y,
+                                           double ux, double uy,
+                                           double std_ux, double std_uy) {
+  double c1 = 1.0/(2 * M_PI * std_ux * std_uy);
+  double c2_x = ((x-ux) * (x-ux)) / (2 * std_ux * std_ux);
+  double c2_y = ((y-uy) * (y-uy)) / (2 * std_uy * std_uy);
+
+  return c1 * exp(-(c2_x + c2_y));
+}
+
 void ParticleFilter::resample() {
 	// TODO: Resample particles with replacement with probability proportional to their weight. 
 	// NOTE: You may find std::discrete_distribution helpful here.

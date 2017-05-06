@@ -20,8 +20,11 @@ int TestParticleFilter();
 int main() {
 //  int result = TestParticleFilter();
   ParticleFilter pf;
-  double sigma_pos [3] = {0.3, 0.3, 0.01};
-  pf.init(6, 3, 0.5, sigma_pos);
+//  double sigma_pos [3] = {0.3, 0.3, 0.01};
+//  pf.init(6, 3, 0.5, sigma_pos);
+
+  double result = pf.CalculateLikelihood(6, 3, 5, 3, 0.3, 0.3);
+  std::cout << "result: " << result << std::endl;
   return 0;
 }
 

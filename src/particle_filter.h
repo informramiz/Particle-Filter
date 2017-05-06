@@ -94,6 +94,20 @@ public:
 	const bool initialized() const {
 		return is_initialized;
 	}
+
+	double CalculateLikelihood(double x, double y,
+	                           double ux, double uy,
+	                           double std_ux, double std_uy);
+private:
+
+	// Number of particles to draw
+	  int num_particles;
+
+	  // Flag, if filter is initialized
+	  bool is_initialized;
+
+	  // Vector of weights of all particles
+	  std::vector<double> weights;
 };
 
 

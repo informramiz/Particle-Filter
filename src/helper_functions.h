@@ -46,7 +46,7 @@ struct LandmarkObs {
 /**
  * @param angle_rad, angle in radians to normalize between [-pi and pi]
  */
-float NormalizeAngle(float angle_rad) {
+inline float NormalizeAngle(float angle_rad) {
   angle_rad = angle_rad - 2*M_PI*floor((angle_rad+ M_PI)/(2 * M_PI ));
   return angle_rad;
 }

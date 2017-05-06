@@ -56,11 +56,34 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
-	// TODO: Add measurements to each particle and add random Gaussian noise.
+	// Add measurements to each particle and add random Gaussian noise.
 	// NOTE: When adding noise you may find std::normal_distribution and std::default_random_engine useful.
 	//  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
 	//  http://www.cplusplus.com/reference/random/default_random_engine/
 
+  std::default_random_engine generator;
+
+  for (int i = 0; i < num_particles; ++i) {
+    //for ease, take reference of current index particle
+    Particle &particle = particles[i];
+
+    //predict x, y and yaw by applying eqse of motion for bicycle model when
+    //yaw_rate is not zero
+    double new_x = particle.x + (velocity/yaw_rate) * (sin(particle.theta + yaw_rate * delta_t) - sin(particle.theta));
+    double new_y = particle.y + (velocity/yaw_rate) * (-cos(particle.theta + yaw_rate * delta_t) + cos(particle.theta));
+    double new_theta = particle.theta + yaw_rate * delta_t;
+
+    //create normal distribution for each of new x, y, theta
+    //this will be used to get Gaussian noised
+    std::normal_distribution<double> normal_distribution_x(new_x, std_pos[0]);
+    std::normal_distribution<double> normal_distribution_y(new_y, std_pos[1]);
+    std::normal_distribution<double> normal_distribution_theta(new_theta, std_pos[2]);
+
+    //get a random Gaussian noised value for each of new x, y, theta
+    particle.x = normal_distribution_x(generator);
+    particle.y = normal_distribution_y(generator);
+    particle.theta = normal_distribution_theta(generator);
+  }
 }
 
 void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations) {
@@ -118,7 +141,7 @@ double ParticleFilter::CalculateLikelihood(double x, double y,
 }
 
 void ParticleFilter::resample() {
-	// TODO: Resample particles with replacement with probability proportional to their weight. 
+	// Resample particles with replacement with probability proportional to their weight.
 	// NOTE: You may find std::discrete_distribution helpful here.
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 

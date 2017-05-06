@@ -23,7 +23,8 @@ int main() {
   ParticleFilter pf;
   double sigma_pos [3] = {0.3, 0.3, 0.01};
   pf.init(6, 3, 0.5, sigma_pos);
-  pf.resample();
+//  pf.resample();
+  pf.prediction(0.9, sigma_pos, 10, 0.7);
 
 //  //particle position and heading angle in map-coordinates
 //  Particle particle;

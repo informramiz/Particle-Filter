@@ -122,6 +122,33 @@ void ParticleFilter::resample() {
 	// NOTE: You may find std::discrete_distribution helpful here.
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 
+  //create a vector of weights with index of vector same as index of particle
+  //in particles vector
+  std::vector<double> weights(num_particles);
+  weights.resize(num_particles);
+  for (int i = 0; i < num_particles; ++i) {
+    weights[i] = particles[i].weight;
+  }
+
+  //create a random number generator engine
+  std::default_random_engine generator;
+  //create discrete distribution which generates numbers (indexes)
+  //according to their weights (weight at that index)
+  std::discrete_distribution<int> discrete_distribution(weights.begin(), weights.end());
+
+  //vector to hold resampled_particles
+  std::vector<Particle> resampled_particles(num_particles);
+  resampled_particles.resize(num_particles);
+
+  //resample particles using discrete distribution
+  for (int i = 0; i < num_particles; ++i) {
+    int particle_index = discrete_distribution(generator);
+    resampled_particles[i] = particles[particle_index];
+  }
+
+  //assign resampled_particles back to particles vector
+  //so that now particle filter holds updated re-sampled particles vector
+  particles = resampled_particles;
 }
 
 void ParticleFilter::write(std::string filename) {

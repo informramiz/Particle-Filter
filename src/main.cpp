@@ -19,28 +19,33 @@ using namespace std;
 int TestParticleFilter();
 
 int main() {
-//  int result = TestParticleFilter();
+  //test resampling method
   ParticleFilter pf;
+  double sigma_pos [3] = {0.3, 0.3, 0.01};
+  pf.init(6, 3, 0.5, sigma_pos);
+  pf.resample();
 
-  //particle position and heading angle in map-coordinates
-  Particle particle;
-  particle.x = 4;
-  particle.y = 5;
-  particle.theta = -M_PI / 2.0;
-
-  //observation position in vehicle coordinates
-  LandmarkObs obs;
-  obs.x = 2;
-  obs.y = 2;
-
-  LandmarkObs t_obs = pf.TransformToMapCoordinates(particle, obs);
-  std::cout << "x, y: " << t_obs.x << ", " << t_obs.y << std::endl;
+//  //particle position and heading angle in map-coordinates
+//  Particle particle;
+//  particle.x = 4;
+//  particle.y = 5;
+//  particle.theta = -M_PI / 2.0;
+//
+//  //observation position in vehicle coordinates
+//  LandmarkObs obs;
+//  obs.x = 2;
+//  obs.y = 2;
+//
+//  LandmarkObs t_obs = pf.TransformToMapCoordinates(particle, obs);
+//  std::cout << "x, y: " << t_obs.x << ", " << t_obs.y << std::endl;
 
 //  double sigma_pos [3] = {0.3, 0.3, 0.01};
 //  pf.init(6, 3, 0.5, sigma_pos);
 
 //  double result = pf.CalculateLikelihood(6, 3, 5, 3, 0.3, 0.3);
 //  std::cout << "result: " << result << std::endl;
+
+  //  int result = TestParticleFilter();
   return 0;
 }
 

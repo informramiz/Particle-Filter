@@ -43,6 +43,14 @@ struct LandmarkObs {
 	double y;			// Local (vehicle coordinates) y position of landmark observation [m]
 };
 
+/**
+ * @param angle_rad, angle in radians to normalize between [-pi and pi]
+ */
+float NormalizeAngle(float angle_rad) {
+  angle_rad = angle_rad - 2*M_PI*floor((angle_rad+ M_PI)/(2 * M_PI ));
+  return angle_rad;
+}
+
 /*
  * Computes the Euclidean distance between two 2D points.
  * @param (x1,y1) x and y coordinates of first point

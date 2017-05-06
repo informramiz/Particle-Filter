@@ -51,6 +51,13 @@ inline float NormalizeAngle(float angle_rad) {
   return angle_rad;
 }
 
+/**
+ * Calculates Gaussian probability
+ */
+inline float Gaussian(double x, double mean, double sigma) {
+  return (1.0/sqrt(2 * M_PI * sigma * sigma)) * exp(-((x-mean) * (x-mean))/(2 * sigma * sigma));
+}
+
 /*
  * Computes the Euclidean distance between two 2D points.
  * @param (x1,y1) x and y coordinates of first point
@@ -107,12 +114,12 @@ inline bool read_map_data(std::string filename, Map& map) {
 		Map::single_landmark_s single_landmark_temp;
 
 		// Set values
-		single_landmark_temp.id_i = id_i;
-		single_landmark_temp.x_f  = landmark_x_f;
-		single_landmark_temp.y_f  = landmark_y_f;
+		single_landmark_temp.id = id_i;
+		single_landmark_temp.x  = landmark_x_f;
+		single_landmark_temp.y  = landmark_y_f;
 
 		// Add to landmark list of map:
-		map.landmark_list.push_back(single_landmark_temp);
+		map.landmark_list_.push_back(single_landmark_temp);
 	}
 	return true;
 }

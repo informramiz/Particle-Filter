@@ -1,16 +1,22 @@
 /*
  * particle_filter.cpp
  *
- *  Created on: Dec 12, 2016
- *      Author: Tiffany Huang
+ *  Created on: May 16, 2016
+ *      Author: Ramiz Raja
  */
 
 #include <random>
 #include <algorithm>
 #include <iostream>
 #include <numeric>
+#include <cmath>
 
 #include "particle_filter.h"
+
+ParticleFilter::ParticleFilter() {
+  num_particles = 1000;
+  is_initialized = false;
+}
 
 void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	// TODO: Set the number of particles. Initialize all particles to first position (based on estimates of 
@@ -18,6 +24,35 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	// Add random Gaussian noise to each particle.
 	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
 
+  //standard deviations for x, y and yaw
+    double std_x = std[0];
+    double std_y = std[1];
+    double std_yaw = std[2]; // in radians
+
+    //initialize a random number generator
+    std::default_random_engine generator;
+
+    //create a normal distribution for each of x, y and yaw
+    std::normal_distribution<double> normal_distribution_x(x, std_x);
+    std::normal_distribution<double> normal_distribution_y(y, std_y);
+    std::normal_distribution<double> normal_distribution_yaw(theta, std_yaw);
+
+    for (int i = 0; i < num_particles; ++i) {
+      Particle particle;
+      particle.id = i;
+
+      //randomly generate samples of x, y and yaw from their respective normal distributions
+      particle.x = normal_distribution_x(generator);
+      particle.y = normal_distribution_y(generator);
+      particle.theta = normal_distribution_yaw(generator);
+
+      //initially set weight to 1
+      particle.weight = 1;
+
+      particles.push_back(particle);
+    }
+
+    is_initialized = true;
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {

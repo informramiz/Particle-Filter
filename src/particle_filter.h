@@ -106,6 +106,15 @@ public:
 	double CalculateLikelihood(double x, double y,
 	                           double ux, double uy,
 	                           double std_ux, double std_uy);
+	/**
+	 * Transforms a given observation to map coordinates from vehicle coordinates with respect
+	 * to given particle position along with heading direction of particle in
+	 * map coordinates.
+	 *
+	 * @param particle, particle position in map coordinates with respect to which observation needs to be transformed
+	 * @param observation, observation to be transform to map coordinates from vehicle coordinates
+	 */
+	LandmarkObs TransformToMapCoordinates(const Particle & particle, LandmarkObs observation);
 private:
 
 	// Number of particles to draw

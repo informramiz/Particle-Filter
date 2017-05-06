@@ -86,6 +86,27 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   http://planning.cs.uiuc.edu/node99.html
 }
 
+LandmarkObs ParticleFilter::TransformToMapCoordinates(const Particle & particle, LandmarkObs observation) {
+  //x, y to be transformed
+  double x = observation.x;
+  double y = observation.y;
+
+  //x and y with with respect to which
+  //observation needs to be transformed
+  double tx = particle.x;
+  double ty = particle.y;
+  double theta = particle.theta;
+
+  LandmarkObs transformed_observation;
+  //apply rotation to align vehicle coordinate system and map coordinate system
+  //followed by translation to translate observation with respect to particle position
+  transformed_observation.id = observation.id;
+  transformed_observation.x = x*cos(theta) + y*sin(theta) + tx;
+  transformed_observation.y = -1*x*sin(theta) + y*cos(theta) + ty;
+
+  return transformed_observation;
+}
+
 double ParticleFilter::CalculateLikelihood(double x, double y,
                                            double ux, double uy,
                                            double std_ux, double std_uy) {

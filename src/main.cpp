@@ -9,6 +9,7 @@
 #include <ctime>
 #include <iomanip>
 #include <random>
+#include <cmath>
 
 #include "particle_filter.h"
 #include "helper_functions.h"
@@ -20,11 +21,26 @@ int TestParticleFilter();
 int main() {
 //  int result = TestParticleFilter();
   ParticleFilter pf;
+
+  //particle position and heading angle in map-coordinates
+  Particle particle;
+  particle.x = 4;
+  particle.y = 5;
+  particle.theta = -M_PI / 2.0;
+
+  //observation position in vehicle coordinates
+  LandmarkObs obs;
+  obs.x = 2;
+  obs.y = 2;
+
+  LandmarkObs t_obs = pf.TransformToMapCoordinates(particle, obs);
+  std::cout << "x, y: " << t_obs.x << ", " << t_obs.y << std::endl;
+
 //  double sigma_pos [3] = {0.3, 0.3, 0.01};
 //  pf.init(6, 3, 0.5, sigma_pos);
 
-  double result = pf.CalculateLikelihood(6, 3, 5, 3, 0.3, 0.3);
-  std::cout << "result: " << result << std::endl;
+//  double result = pf.CalculateLikelihood(6, 3, 5, 3, 0.3, 0.3);
+//  std::cout << "result: " << result << std::endl;
   return 0;
 }
 

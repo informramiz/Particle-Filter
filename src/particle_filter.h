@@ -139,6 +139,23 @@ public:
 	 */
 	Map::MapLandmark FindAssociatedMapLandmark(const LandmarkObs &transformed_observation,
 	                               const std::vector<Map::MapLandmark> &map_landmarks);
+
+	/**
+	 * Calculates the weight for the passed @particle
+	 *
+	 * @param particle        particle to calculate weight of
+	 * @param observations    list of sensor observations
+	 * @param map             map of landmarks to compare observations to
+	 * @param sensor_range    range of sensor in meters
+	 * @param std_landmark[]  Array of dimension 2 [standard deviation of range [m],
+   *   standard deviation of bearing [rad]]
+	 */
+	double CalculateParticleWeight(const Particle &particle,
+	                               const std::vector<LandmarkObs> &observations,
+	                               const Map &map,
+	                               double sensor_range,
+	                               double std_landmark[]);
+
 private:
 
 	// Number of particles to draw

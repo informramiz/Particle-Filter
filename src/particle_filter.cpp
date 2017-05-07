@@ -108,6 +108,53 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   for the fact that the map's y-axis actually points downwards.)
 	//   http://planning.cs.uiuc.edu/node99.html
 
+  //for each particle
+  //filter map landmarks from those that are not in range of sensor from current particle position on map
+    //weight = 1
+    //for each observation
+      //transform observation from vehicle coordinates to map coordinates
+      //Find associated landmark with this transformed measurement, using nearest neighbor
+      //calculate likelihood of this transformed measurement with respect to associate map landmark using Multi-variate Guassian and std_landmark
+      //w *= likelihood for this measurement
+
+    //particle.weight = weight
+
+  //for each particle
+  for (int i = 0; i < num_particles; ++i) {
+    particles[i].weight = CalculateParticleWeight(particles[i], observations, map_landmarks, sensor_range, std_landmark);
+  }
+
+}
+
+double ParticleFilter::CalculateParticleWeight(const Particle &particle,
+                                               const std::vector<LandmarkObs> &observations,
+                                               const Map &map,
+                                               double sensor_range,
+                                               double std_landmark[]) {
+  double weight = 1.0;
+
+  size_t observations_count = observations.size();
+  for (int i = 0; i < observations_count; ++i) {
+    //filter map landmarks from those that are not in range of sensor
+    //from current particle position on map
+    std::vector<Map::MapLandmark> filtered_map_landmarks = FilterMapLandmarks(particle, map, sensor_range);
+
+    //transform observation from vehicle coordinates to map coordinates
+    LandmarkObs transformed_observation = TransformToMapCoordinates(particle, observations[i]);
+
+    //Find associated landmark with this transformed measurement, using nearest neighbor
+    Map::MapLandmark nearest_map_landmark = FindAssociatedMapLandmark(transformed_observation, filtered_map_landmarks);
+
+    //calculate likelihood of this transformed measurement with respect to
+    //associate map landmark using Multi-variate Guassian and std_landmark
+    double likelihood = CalculateLikelihood(transformed_observation, nearest_map_landmark, std_landmark);
+
+    weight *= likelihood;
+  }
+
+  return weight;
+}
+
 std::vector<Map::MapLandmark> ParticleFilter::FilterMapLandmarks(const Particle& particle,
                                                                  const Map &map_landmarks,
                                                                  double sensor_range) {

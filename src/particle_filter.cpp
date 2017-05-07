@@ -218,8 +218,8 @@ LandmarkObs ParticleFilter::TransformToMapCoordinates(const Particle & particle,
   //apply rotation to align vehicle coordinate system and map coordinate system
   //followed by translation to translate observation with respect to particle position
   transformed_observation.id = observation.id;
-  transformed_observation.x = x*cos(theta) + y*sin(theta) + tx;
-  transformed_observation.y = -1*x*sin(theta) + y*cos(theta) + ty;
+  transformed_observation.x = x*cos(theta) - y*sin(theta) + tx;
+  transformed_observation.y = x*sin(theta) + y*cos(theta) + ty;
 
   return transformed_observation;
 }

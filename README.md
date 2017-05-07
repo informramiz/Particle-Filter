@@ -1,5 +1,5 @@
 # Overview
-2 dimensional particle filter in C++ to localize a lost vehicle, given a map of this location, a (noisy) GPS estimate of its initial location, and lots of (noisy) sensor and control data. 
+A 2D particle filter in C++ to localize a lost vehicle, given a map of its lost location, a (noisy) GPS estimate of its initial location, and lots of (noisy) sensor and control data. 
 
 I ran this particle filter on an input data present in `data` folder of this repo and I got following accuracy and performance.
 
@@ -25,28 +25,23 @@ Once you have this repository on your machine, `cd` into the repository's root d
 
 If everything worked you should see something like the following output:
 
+```
 Time step: 2444
 Cumulative mean weighted error: x .1 y .1 yaw .02
 Runtime (sec): 38.187226
 Success! Your particle filter passed!
+```
+
+
+Otherwise you might get
 
 ```
-Otherwise you might get
-.
-.
-.
 Time step: 100
 Cumulative mean weighted error: x 39.8926 y 9.60949 yaw 0.198841
 Your x error, 39.8926 is larger than the maximum allowable error, 1
 ```
 
-Your job is to build out the methods in `particle_filter.cpp` until the last line of output says:
-
-```
-Success! Your particle filter passed!
-```
-
-# Implementing the Particle Filter
+# Directory Structure
 The directory structure of this repository is as follows:
 
 ```
@@ -75,7 +70,7 @@ root
     |   particle_filter.h
 ```
 
-The only file you should modify is `particle_filter.cpp` in the `src` directory. The file contains the scaffolding of a `ParticleFilter` class and some associated methods. Read through the code, the comments, and the header file `particle_filter.h` to get a sense for what this code do.
+The main file is `particle_filter.cpp` in the `src` directory. The file contains the main code of a `ParticleFilter` and some associated methods. Read through the code, the comments, and the header file `particle_filter.h` to get a sense for what this code do.
 
 If you are interested, take a look at `src/main.cpp` as well. This file contains the code that will actually be running particle filter and calling the associated methods.
 

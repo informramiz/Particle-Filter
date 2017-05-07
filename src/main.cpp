@@ -31,7 +31,7 @@ int main() {
 
   Map::MapLandmark l2;
   l2.x = 1;
-  l2.y = 30;
+  l2.y = 11;
 
   Map::MapLandmark l3;
   l3.x = 1;
@@ -49,6 +49,13 @@ int main() {
 
   //should output 2
   std::cout << landmarks.size() << std::endl;
+
+  LandmarkObs observation;
+  observation.x = 1;
+  observation.y = 1;
+
+  Map::MapLandmark nearest_landmark = pf.FindAssociatedMapLandmark(observation, landmarks);
+  std::cout << "Nearest landmark: " << nearest_landmark.x << ", " << nearest_landmark.y << std::endl;
 
 //  double sigma_pos [3] = {0.3, 0.3, 0.01};
 //  pf.init(6, 3, 0.5, sigma_pos);

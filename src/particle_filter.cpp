@@ -132,6 +132,30 @@ std::vector<Map::MapLandmark> ParticleFilter::FilterMapLandmarks(const Particle&
   return filtered_map_landmarks;
 }
 
+Map::MapLandmark ParticleFilter::FindAssociatedMapLandmark(const LandmarkObs &transformed_observation,
+                                                           const std::vector<Map::MapLandmark> &map_landmarks) {
+
+  double min_distance = dist(transformed_observation.x, transformed_observation.y,
+      map_landmarks[0].x, map_landmarks[0].y);
+  int min_index = 0;
+
+  size_t map_landmarks_count = map_landmarks.size();
+  for (int i = 1; i < map_landmarks_count; ++i) {
+    //calculate euclidean distance between predicted observation and map landmark
+    double distance = dist(transformed_observation.x, transformed_observation.y,
+                           map_landmarks[i].x, map_landmarks[i].y);
+
+    //if new landmark is closer than previous nearest then mark
+    //the current landmark as nearest
+    if(distance < min_distance) {
+      min_distance = distance;
+      min_index = i;
+    }
+  }
+
+  return map_landmarks[min_index];
+}
+
 LandmarkObs ParticleFilter::TransformToMapCoordinates(const Particle & particle, LandmarkObs observation) {
   //x, y to be transformed
   double x = observation.x;

@@ -128,6 +128,16 @@ public:
 	std::vector<Map::MapLandmark> FilterMapLandmarks(const Particle& particle,
 	                                                const Map& map_landmarks,
 	                                                double sensor_range);
+
+	/**
+	 * Find closest map landmark for the passed transformed observation.
+	 *
+	 * @param transformed_observation   sensor observation transformed in map-coordinates.
+	 * @param map_landmakrs             list of map landmarks which are within sensor range.
+	 * @return Map::MapLandmark         map landmark closest to @transformed_observation
+	 */
+	Map::MapLandmark FindAssociatedMapLandmark(const LandmarkObs &transformed_observation,
+	                               const std::vector<Map::MapLandmark> &map_landmarks);
 private:
 
 	// Number of particles to draw

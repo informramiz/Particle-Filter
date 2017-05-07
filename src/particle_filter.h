@@ -26,9 +26,6 @@ struct Particle {
 class ParticleFilter {
 public:
 	
-	// Set of current particles
-	std::vector<Particle> particles;
-
 	// Constructor
 	ParticleFilter();
 
@@ -44,7 +41,7 @@ public:
 	 * @param std[] Array of dimension 3 [standard deviation of x [m], standard deviation of y [m]
 	 *   standard deviation of yaw [rad]]
 	 */
-	void init(double x, double y, double theta, double std[]);
+	void Init(double x, double y, double theta, double std[]);
 
 	/**
 	 * prediction Predicts the state for the next time step
@@ -55,7 +52,7 @@ public:
 	 * @param velocity Velocity of car from t to t+1 [m/s]
 	 * @param yaw_rate Yaw rate of car from t to t+1 [rad/s]
 	 */
-	void prediction(double delta_t, double std_pos[], double velocity, double yaw_rate);
+	void Prediction(double delta_t, double std_pos[], double velocity, double yaw_rate);
 	
 	/**
 	 * updateWeights Updates the weights for each particle based on the likelihood of the 
@@ -66,98 +63,109 @@ public:
 	 * @param observations Vector of landmark observations
 	 * @param map Map class containing map landmarks
 	 */
-	void updateWeights(double sensor_range, double std_landmark[], std::vector<LandmarkObs> observations,
+	void UpdateWeights(double sensor_range, double std_landmark[], std::vector<LandmarkObs> observations,
 			Map map_landmarks);
 	
 	/**
 	 * resample Resamples from the updated set of particles to form
 	 *   the new set of particles.
 	 */
-	void resample();
+	void Resample();
 	
 	/*
 	 * write Writes particle positions to a file.
 	 * @param filename File to write particle positions to.
 	 */
-	void write(std::string filename);
+	void Write(std::string filename);
 	
 	/**
 	 * initialized Returns whether particle filter is initialized yet or not.
 	 */
-	const bool initialized() const {
-		return is_initialized;
+	const bool IsInitialized() const {
+		return is_initialized_;
 	}
 
-	/**
-	 * Returns likelihood of @param observation given @map_landmark and standard
-	 * deviation @param std_landmark
-	 *
-	 * @param observation     observation for which to calculate likelihood
-	 * @param map_landmark    actual map landmark as given condition for likelihood
-	 * @param std_landmark[]  Array of dimension 2 [standard deviation of x [m],
-   *   standard deviation of y [m]]
-	 */
-	double CalculateLikelihood(LandmarkObs observation,
-                             Map::MapLandmark map_landmark,
-                             double std_landmark[]);
-	/**
-	 * Transforms a given observation to map coordinates from vehicle coordinates with respect
-	 * to given particle position along with heading direction of particle in
-	 * map coordinates.
-	 *
-	 * @param particle, particle position in map coordinates with respect to which observation needs to be transformed
-	 * @param observation, observation to be transform to map coordinates from vehicle coordinates
-	 */
-	LandmarkObs TransformToMapCoordinates(const Particle & particle, LandmarkObs observation);
+  int GetNumParticles() const {
+    return num_particles_;
+  }
 
-	/**
-	 * Filters landmarks according to sensor range given.
-	 *
-	 * @param particle        position of particle on map from which to check distance of landmark
-	 * @param map_landmarks   list of map landmarks
-	 * @param sensor_range    range of sensor in meters
-	 * @return  std::vector<MapLandmark>, list of filtered map landmarks
-	 */
-	std::vector<Map::MapLandmark> FilterMapLandmarks(const Particle& particle,
-	                                                const Map& map_landmarks,
-	                                                double sensor_range);
-
-	/**
-	 * Find closest map landmark for the passed transformed observation.
-	 *
-	 * @param transformed_observation   sensor observation transformed in map-coordinates.
-	 * @param map_landmakrs             list of map landmarks which are within sensor range.
-	 * @return Map::MapLandmark         map landmark closest to @transformed_observation
-	 */
-	Map::MapLandmark FindAssociatedMapLandmark(const LandmarkObs &transformed_observation,
-	                               const std::vector<Map::MapLandmark> &map_landmarks);
-
-	/**
-	 * Calculates the weight for the passed @particle
-	 *
-	 * @param particle        particle to calculate weight of
-	 * @param observations    list of sensor observations
-	 * @param map             map of landmarks to compare observations to
-	 * @param sensor_range    range of sensor in meters
-	 * @param std_landmark[]  Array of dimension 2 [standard deviation of x [m],
-   *   standard deviation of y [m]]
-	 */
-	double CalculateParticleWeight(const Particle &particle,
-	                               const std::vector<LandmarkObs> &observations,
-	                               const Map &map,
-	                               double sensor_range,
-	                               double std_landmark[]);
+  const std::vector<Particle>& GetParticles() const {
+    return particles_;
+  }
 
 private:
 
-	// Number of particles to draw
-	  int num_particles;
+  /**
+   * Returns likelihood of @param observation given @map_landmark and standard
+   * deviation @param std_landmark
+   *
+   * @param observation     observation for which to calculate likelihood
+   * @param map_landmark    actual map landmark as given condition for likelihood
+   * @param std_landmark[]  Array of dimension 2 [standard deviation of x [m],
+   *   standard deviation of y [m]]
+   */
+  double CalculateLikelihood(LandmarkObs observation,
+                             Map::MapLandmark map_landmark,
+                             double std_landmark[]);
+  /**
+   * Transforms a given observation to map coordinates from vehicle coordinates with respect
+   * to given particle position along with heading direction of particle in
+   * map coordinates.
+   *
+   * @param particle, particle position in map coordinates with respect to which observation needs to be transformed
+   * @param observation, observation to be transform to map coordinates from vehicle coordinates
+   */
+  LandmarkObs TransformToMapCoordinates(const Particle & particle, LandmarkObs observation);
 
-	  // Flag, if filter is initialized
-	  bool is_initialized;
+  /**
+   * Filters landmarks according to sensor range given.
+   *
+   * @param particle        position of particle on map from which to check distance of landmark
+   * @param map_landmarks   list of map landmarks
+   * @param sensor_range    range of sensor in meters
+   * @return  std::vector<MapLandmark>, list of filtered map landmarks
+   */
+  std::vector<Map::MapLandmark> FilterMapLandmarks(const Particle& particle,
+                                                  const Map& map_landmarks,
+                                                  double sensor_range);
 
-	  // Vector of weights of all particles
-	  std::vector<double> weights;
+  /**
+   * Find closest map landmark for the passed transformed observation.
+   *
+   * @param transformed_observation   sensor observation transformed in map-coordinates.
+   * @param map_landmakrs             list of map landmarks which are within sensor range.
+   * @return Map::MapLandmark         map landmark closest to @transformed_observation
+   */
+  Map::MapLandmark FindAssociatedMapLandmark(const LandmarkObs &transformed_observation,
+                                 const std::vector<Map::MapLandmark> &map_landmarks);
+
+  /**
+   * Calculates the weight for the passed @particle
+   *
+   * @param particle        particle to calculate weight of
+   * @param observations    list of sensor observations
+   * @param map             map of landmarks to compare observations to
+   * @param sensor_range    range of sensor in meters
+   * @param std_landmark[]  Array of dimension 2 [standard deviation of x [m],
+   *   standard deviation of y [m]]
+   */
+  double CalculateParticleWeight(const Particle &particle,
+                                 const std::vector<LandmarkObs> &observations,
+                                 const Map &map,
+                                 double sensor_range,
+                                 double std_landmark[]);
+
+  // Set of current particles
+  std::vector<Particle> particles_;
+
+  // Number of particles to draw
+  int num_particles_;
+
+  // Flag, if filter is initialized
+  bool is_initialized_;
+
+  // Vector of weights of all particles
+  std::vector<double> weights_;
 };
 
 

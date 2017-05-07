@@ -17,14 +17,14 @@
 
 using namespace std;
 
-int TestParticleFilter();
+int UdacityTestParticleFilter();
 
 int main() {
-  int result = TestParticleFilter();
+  int result = UdacityTestParticleFilter();
   return result;
 }
 
-int TestParticleFilter() {
+int UdacityTestParticleFilter() {
   // parameters related to grading.
     int time_steps_before_lock_required = 100; // number of time steps before accuracy is checked by grader.
     double max_runtime = 45; // Max allowable runtime to pass [sec]
@@ -58,21 +58,21 @@ int TestParticleFilter() {
     double n_x, n_y, n_theta, n_range, n_heading;
     // Read map data
     Map map;
-    if (!read_map_data("data/map_data.txt", map)) {
+    if (!ReadMapData("data/map_data.txt", map)) {
       cout << "Error: Could not open map file" << endl;
       return -1;
     }
 
     // Read position data
-    vector<control_s> position_meas;
-    if (!read_control_data("data/control_data.txt", position_meas)) {
+    vector<Control> position_meas;
+    if (!ReadControlData("data/control_data.txt", position_meas)) {
       cout << "Error: Could not open position/control measurement file" << endl;
       return -1;
     }
 
     // Read ground truth data
-    vector<ground_truth> gt;
-    if (!read_gt_data("data/gt_data.txt", gt)) {
+    vector<GroundTruth> gt;
+    if (!ReadGroundTruthData("data/gt_data.txt", gt)) {
       cout << "Error: Could not open ground truth data file" << endl;
       return -1;
     }
@@ -89,21 +89,21 @@ int TestParticleFilter() {
       ostringstream file;
       file << "data/observation/observations_" << setfill('0') << setw(6) << i+1 << ".txt";
       vector<LandmarkObs> observations;
-      if (!read_landmark_data(file.str(), observations)) {
+      if (!ReadLandmarkData(file.str(), observations)) {
         cout << "Error: Could not open observation file " << i+1 << endl;
         return -1;
       }
 
       // Initialize particle filter if this is the first time step.
-      if (!pf.initialized()) {
+      if (!pf.IsInitialized()) {
         n_x = N_x_init(gen);
         n_y = N_y_init(gen);
         n_theta = N_theta_init(gen);
-        pf.init(gt[i].x + n_x, gt[i].y + n_y, gt[i].theta + n_theta, sigma_pos);
+        pf.Init(gt[i].x + n_x, gt[i].y + n_y, gt[i].theta + n_theta, sigma_pos);
       }
       else {
         // Predict the vehicle's next state (noiseless).
-        pf.prediction(delta_t, sigma_pos, position_meas[i-1].velocity, position_meas[i-1].yawrate);
+        pf.Prediction(delta_t, sigma_pos, position_meas[i-1].velocity, position_meas[i-1].yawrate);
       }
       // simulate the addition of noise to noiseless observation data.
       vector<LandmarkObs> noisy_observations;
@@ -118,11 +118,11 @@ int TestParticleFilter() {
       }
 
       // Update the weights and resample
-      pf.updateWeights(sensor_range, sigma_landmark, noisy_observations, map);
-      pf.resample();
+      pf.UpdateWeights(sensor_range, sigma_landmark, noisy_observations, map);
+      pf.Resample();
 
       // Calculate and output the average weighted error of the particle filter over all time steps so far.
-      vector<Particle> particles = pf.particles;
+      vector<Particle> particles = pf.GetParticles();
       int num_particles = particles.size();
       double highest_weight = 0.0;
       Particle best_particle;
@@ -132,7 +132,7 @@ int TestParticleFilter() {
           best_particle = particles[i];
         }
       }
-      double *avg_error = getError(gt[i].x, gt[i].y, gt[i].theta, best_particle.x, best_particle.y, best_particle.theta);
+      double *avg_error = GetError(gt[i].x, gt[i].y, gt[i].theta, best_particle.x, best_particle.y, best_particle.theta);
 
       for (int j = 0; j < 3; ++j) {
         total_error[j] += avg_error[j];
@@ -165,10 +165,10 @@ int TestParticleFilter() {
     cout << "Runtime (sec): " << runtime << endl;
 
     // Print success if accuracy and runtime are sufficient (and this isn't just the starter code).
-    if (runtime < max_runtime && pf.initialized()) {
+    if (runtime < max_runtime && pf.IsInitialized()) {
       cout << "Success! Your particle filter passed!" << endl;
     }
-    else if (!pf.initialized()) {
+    else if (!pf.IsInitialized()) {
       cout << "This is the starter code. You haven't initialized your filter." << endl;
     }
     else {

@@ -62,10 +62,15 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	//  http://www.cplusplus.com/reference/random/default_random_engine/
 
   std::default_random_engine generator;
+  //create normal distribution for each of new x, y, theta
+  //this will be used to get Gaussian noised
+  std::normal_distribution<double> normal_distribution_x(0, std_pos[0]);
+  std::normal_distribution<double> normal_distribution_y(0, std_pos[1]);
+  std::normal_distribution<double> normal_distribution_theta(0, std_pos[2]);
 
   for (int i = 0; i < num_particles; ++i) {
     //for ease, take reference of current index particle
-    Particle &particle = particles[i];
+    Particle particle = particles[i];
 
     //predict x, y and yaw by applying eqse of motion for bicycle model when
     //yaw_rate is not zero
@@ -73,16 +78,10 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
     double new_y = particle.y + (velocity/yaw_rate) * (-cos(particle.theta + yaw_rate * delta_t) + cos(particle.theta));
     double new_theta = particle.theta + yaw_rate * delta_t;
 
-    //create normal distribution for each of new x, y, theta
-    //this will be used to get Gaussian noised
-    std::normal_distribution<double> normal_distribution_x(new_x, std_pos[0]);
-    std::normal_distribution<double> normal_distribution_y(new_y, std_pos[1]);
-    std::normal_distribution<double> normal_distribution_theta(new_theta, std_pos[2]);
-
     //get a random Gaussian noised value for each of new x, y, theta
-    particle.x = normal_distribution_x(generator);
-    particle.y = normal_distribution_y(generator);
-    particle.theta = normal_distribution_theta(generator);
+    particles[i].x = new_x + normal_distribution_x(generator);
+    particles[i].y = new_y + normal_distribution_y(generator);
+    particles[i].theta = new_theta + normal_distribution_theta(generator);
   }
 }
 

@@ -1,13 +1,12 @@
 # Overview
-This repository contains all the code needed to complete the final project for the Localization course in Udacity's Self-Driving Car Nanodegree.
+2 dimensional particle filter in C++ to localize a lost vehicle, given a map of this location, a (noisy) GPS estimate of its initial location, and lots of (noisy) sensor and control data. 
 
-#### Submission
-All you will submit is your completed version of `particle_filter.cpp`, which is located in the `src` directory. You should probably do a `git pull` before submitting to verify that your project passes the most up-to-date version of the grading code (there are some parameters in `src/main.cpp` which govern the requirements on accuracy and run time.)
+I ran this particle filter on an input data present in `data` folder of this repo and I got following accuracy and performance.
 
-## Project Introduction
-Your robot has been kidnapped and transported to a new location! Luckily it has a map of this location, a (noisy) GPS estimate of its initial location, and lots of (noisy) sensor and control data.
-
-In this project you will implement a 2 dimensional particle filter in C++. Your particle filter will be given a map and some initial localization information (analogous to what a GPS would provide). At each time step your filter will also get observation and control data. 
+```
+Cumulative mean weighted error: x 0.111211 y 0.10463 yaw 0.00367565
+Runtime (sec): 1.23799
+```
 
 ## Running the Code
 Once you have this repository on your machine, `cd` into the repository's root directory and run the following commands from the command line:
@@ -19,6 +18,7 @@ Once you have this repository on your machine, `cd` into the repository's root d
 ```
 
 > **NOTE**
+
 > If you get any `command not found` problems, you will have to install 
 > the associated dependencies (for example, 
 > [cmake](https://cmake.org/install/))
@@ -75,11 +75,43 @@ root
     |   particle_filter.h
 ```
 
-The only file you should modify is `particle_filter.cpp` in the `src` directory. The file contains the scaffolding of a `ParticleFilter` class and some associated methods. Read through the code, the comments, and the header file `particle_filter.h` to get a sense for what this code is expected to do.
+The only file you should modify is `particle_filter.cpp` in the `src` directory. The file contains the scaffolding of a `ParticleFilter` class and some associated methods. Read through the code, the comments, and the header file `particle_filter.h` to get a sense for what this code do.
 
-If you are interested, take a look at `src/main.cpp` as well. This file contains the code that will actually be running your particle filter and calling the associated methods.
+If you are interested, take a look at `src/main.cpp` as well. This file contains the code that will actually be running particle filter and calling the associated methods.
+
+## Using this Code in Your Own Project
+
+There is a detailed coding example in main.cpp which you can follow to see how to use this particle in your own project and below is a very high level view of which functions are needed to be called and in which order. 
+
+```
+
+/Set up parameters here
+double delta_t = 0.1; // Time elapsed between measurements [sec]
+double sensor_range = 50; // Sensor range [m]
+
+double sigma_pos [3] = {0.3, 0.3, 0.01}; // GPS measurement uncertainty [x [m], y [m], theta [rad]]
+double sigma_landmark [2] = {0.3, 0.3}; // Landmark measurement uncertainty [x [m], y [m]]
+
+ParticleFilter pf;
+
+// Initialize particle filter if this is the first time step.
+if (!pf.IsInitialized()) {
+    pf.Init(gps_x, gps_y, gps_yaw, sigma_pos);
+}
+else {
+    // Predict the vehicle's next state (noiseless).
+    pf.Prediction(delta_t, sigma_pos, velocity, yawrate);
+}
+
+// Update the weights and resample
+pf.UpdateWeights(sensor_range, sigma_landmark, noisy_observations, map);
+pf.Resample();
+
+```
+
 
 ## Inputs to the Particle Filter
+
 You can find the inputs to the particle filter in the `data` directory. 
 
 #### The Map*
@@ -103,17 +135,11 @@ These files contain observation data for all "observable" landmarks. Here observ
 1. x distance to the landmark in meters (right is positive) RELATIVE TO THE VEHICLE. 
 2. y distance to the landmark in meters (forward is positive) RELATIVE TO THE VEHICLE.
 
-> **NOTE**
-> The vehicle's coordinate system is NOT the map coordinate system. Your 
-> code will have to handle this transformation.
 
-## Success Criteria
-If your particle filter passes the current grading code (you can make sure you have the current version at any time by doing a `git pull`), then you should pass! 
+The two things test for success of this filter are:
 
-The two things the grading code is looking for are:
-
-1. **Accuracy**: your particle filter should localize vehicle position and yaw to within the values specified in the parameters `max_translation_error` (maximum allowed error in x or y) and `max_yaw_error` in `src/main.cpp`.
-2. **Performance**: your particle filter should complete execution within the time specified by `max_runtime` in `src/main.cpp`.
+1. **Accuracy**: Particle filter should localize vehicle position and yaw to within the values specified in the parameters `max_translation_error` (maximum allowed error in x or y) and `max_yaw_error` in `src/main.cpp`.
+2. **Performance**: Particle filter should complete execution within the time specified by `max_runtime` in `src/main.cpp`.
 
 
 

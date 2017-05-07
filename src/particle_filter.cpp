@@ -14,7 +14,7 @@
 #include "particle_filter.h"
 
 ParticleFilter::ParticleFilter() {
-  num_particles = 1000;
+  num_particles = 100;
   is_initialized = false;
 }
 

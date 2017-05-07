@@ -97,16 +97,17 @@ public:
 	}
 
 	/**
-	 * @param x, x position of observation on map coordinates
-	 * @param y, y position of observation on map coordinates
-	 * @param ux, x position of landmark on map coordinates
-	 * @param uy, y position of landmark on map coordinates
-	 * @param std_ux, uncertainty/standard deviation in x position of landmark
-	 * @param std_uy, uncertainty/standard deviation in y position of landmark
+	 * Returns likelihood of @param observation given @map_landmark and standard
+	 * deviation @param std_landmark
+	 *
+	 * @param observation     observation for which to calculate likelihood
+	 * @param map_landmark    actual map landmark as given condition for likelihood
+	 * @param std_landmark[]  Array of dimension 2 [standard deviation of x [m],
+   *   standard deviation of y [m]]
 	 */
-	double CalculateLikelihood(double x, double y,
-	                           double ux, double uy,
-	                           double std_ux, double std_uy);
+	double CalculateLikelihood(LandmarkObs observation,
+                             Map::MapLandmark map_landmark,
+                             double std_landmark[]);
 	/**
 	 * Transforms a given observation to map coordinates from vehicle coordinates with respect
 	 * to given particle position along with heading direction of particle in

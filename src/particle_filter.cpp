@@ -177,9 +177,16 @@ LandmarkObs ParticleFilter::TransformToMapCoordinates(const Particle & particle,
   return transformed_observation;
 }
 
-double ParticleFilter::CalculateLikelihood(double x, double y,
-                                           double ux, double uy,
-                                           double std_ux, double std_uy) {
+double ParticleFilter::CalculateLikelihood(LandmarkObs observation,
+                                           Map::MapLandmark map_landmark,
+                                           double std_landmark[]) {
+  double x = observation.x;
+  double y = observation.y;
+  double ux = map_landmark.x;
+  double uy = map_landmark.y;
+  double std_ux = std_landmark[0];
+  double std_uy = std_landmark[1];
+
   double c1 = 1.0/(2 * M_PI * std_ux * std_uy);
   double c2_x = ((x-ux) * (x-ux)) / (2 * std_ux * std_ux);
   double c2_y = ((y-uy) * (y-uy)) / (2 * std_uy * std_uy);

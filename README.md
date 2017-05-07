@@ -80,7 +80,7 @@ There is a detailed coding example in main.cpp which you can follow to see how t
 
 ```
 
-/Set up parameters here
+//Set up parameters here
 double delta_t = 0.1; // Time elapsed between measurements [sec]
 double sensor_range = 50; // Sensor range [m]
 

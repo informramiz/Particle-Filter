@@ -130,14 +130,14 @@ double ParticleFilter::CalculateParticleWeight(const Particle &particle,
                                                const Map &map,
                                                double sensor_range,
                                                double std_landmark[]) {
-  double weight = 1.0;
 
+  //filter map landmarks from those that are not in range of sensor
+  //from current particle position on map
+  std::vector<Map::MapLandmark> filtered_map_landmarks = FilterMapLandmarks(particle, map, sensor_range);
+
+  double weight = 1.0;
   size_t observations_count = observations.size();
   for (int i = 0; i < observations_count; ++i) {
-    //filter map landmarks from those that are not in range of sensor
-    //from current particle position on map
-    std::vector<Map::MapLandmark> filtered_map_landmarks = FilterMapLandmarks(particle, map, sensor_range);
-
     //transform observation from vehicle coordinates to map coordinates
     LandmarkObs transformed_observation = TransformToMapCoordinates(particle, observations[i]);
 
@@ -151,6 +151,7 @@ double ParticleFilter::CalculateParticleWeight(const Particle &particle,
     weight *= likelihood;
   }
 
+//  std::cout << "weight: " << weight << std::endl;
   return weight;
 }
 

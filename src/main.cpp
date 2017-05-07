@@ -20,72 +20,8 @@ using namespace std;
 int TestParticleFilter();
 
 int main() {
-  //test map landmarks filtering according to sensor range
-  Particle particle;
-  particle.x = 1;
-  particle.y = 1;
-
-  Map::MapLandmark l1;
-  l1.x = 1;
-  l1.y = 10;
-
-  Map::MapLandmark l2;
-  l2.x = 1;
-  l2.y = 11;
-
-  Map::MapLandmark l3;
-  l3.x = 1;
-  l3.y = 80;
-
-  Map map;
-  map.landmark_list_.push_back(l1);
-  map.landmark_list_.push_back(l2);
-  map.landmark_list_.push_back(l3);
-
-  double sensor_range = 50;
-
-  ParticleFilter pf;
-  std::vector<Map::MapLandmark> landmarks = pf.FilterMapLandmarks(particle, map, sensor_range);
-
-  //should output 2
-  std::cout << landmarks.size() << std::endl;
-
-  LandmarkObs observation;
-  observation.x = 1;
-  observation.y = 1;
-
-  Map::MapLandmark nearest_landmark = pf.FindAssociatedMapLandmark(observation, landmarks);
-  std::cout << "Nearest landmark: " << nearest_landmark.x << ", " << nearest_landmark.y << std::endl;
-
-//  double sigma_pos [3] = {0.3, 0.3, 0.01};
-//  pf.init(6, 3, 0.5, sigma_pos);
-
-//  pf.resample();
-
-//  pf.prediction(0.9, sigma_pos, 10, 0.7);
-
-//  //particle position and heading angle in map-coordinates
-//  Particle particle;
-//  particle.x = 4;
-//  particle.y = 5;
-//  particle.theta = -M_PI / 2.0;
-//
-//  //observation position in vehicle coordinates
-//  LandmarkObs obs;
-//  obs.x = 2;
-//  obs.y = 2;
-//
-//  LandmarkObs t_obs = pf.TransformToMapCoordinates(particle, obs);
-//  std::cout << "x, y: " << t_obs.x << ", " << t_obs.y << std::endl;
-
-//  double sigma_pos [3] = {0.3, 0.3, 0.01};
-//  pf.init(6, 3, 0.5, sigma_pos);
-
-//  double result = pf.CalculateLikelihood(6, 3, 5, 3, 0.3, 0.3);
-//  std::cout << "result: " << result << std::endl;
-
-  //  int result = TestParticleFilter();
-  return 0;
+  int result = TestParticleFilter();
+  return result;
 }
 
 int TestParticleFilter() {

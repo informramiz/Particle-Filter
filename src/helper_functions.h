@@ -1,8 +1,8 @@
 /*
  * helper_functions.h
  * Some helper functions for the 2D particle filter.
- *  Created on: May 16, 2016
- *      Author: Ramiz Raja
+ *  Created on: Dec 13, 2016
+ *      Author: Tiffany Huang
  */
 
 #ifndef HELPER_FUNCTIONS_H_
@@ -17,7 +17,7 @@
 /*
  * Struct representing one position/control measurement.
  */
-struct Control {
+struct control_s {
 	
 	double velocity;	// Velocity [m/s]
 	double yawrate;		// Yaw rate [rad/s]
@@ -26,7 +26,7 @@ struct Control {
 /*
  * Struct representing one ground truth position.
  */
-struct GroundTruth {
+struct ground_truth {
 	
 	double x;		// Global vehicle x position [m]
 	double y;		// Global vehicle y position
@@ -43,32 +43,17 @@ struct LandmarkObs {
 	double y;			// Local (vehicle coordinates) y position of landmark observation [m]
 };
 
-/**
- * @param angle_rad, angle in radians to normalize between [-pi and pi]
- */
-inline float NormalizeAngle(float angle_rad) {
-  angle_rad = angle_rad - 2*M_PI*floor((angle_rad+ M_PI)/(2 * M_PI ));
-  return angle_rad;
-}
-
-/**
- * Calculates Gaussian probability
- */
-inline float Gaussian(double x, double mean, double sigma) {
-  return (1.0/sqrt(2 * M_PI * sigma * sigma)) * exp(-((x-mean) * (x-mean))/(2 * sigma * sigma));
-}
-
 /*
  * Computes the Euclidean distance between two 2D points.
  * @param (x1,y1) x and y coordinates of first point
  * @param (x2,y2) x and y coordinates of second point
  * @output Euclidean distance between two 2D points
  */
-inline double EuclideanDistance(double x1, double y1, double x2, double y2) {
+inline double dist(double x1, double y1, double x2, double y2) {
 	return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
-inline double * GetError(double gt_x, double gt_y, double gt_theta, double pf_x, double pf_y, double pf_theta) {
+inline double * getError(double gt_x, double gt_y, double gt_theta, double pf_x, double pf_y, double pf_theta) {
 	static double error[3];
 	error[0] = fabs(pf_x - gt_x);
 	error[1] = fabs(pf_y - gt_y);
@@ -84,7 +69,7 @@ inline double * GetError(double gt_x, double gt_y, double gt_theta, double pf_x,
  * @param filename Name of file containing map data.
  * @output True if opening and reading file was successful
  */
-inline bool ReadMapData(std::string filename, Map& map) {
+inline bool read_map_data(std::string filename, Map& map) {
 
 	// Get file of map:
 	std::ifstream in_file_map(filename.c_str(),std::ifstream::in);
@@ -111,15 +96,15 @@ inline bool ReadMapData(std::string filename, Map& map) {
 		iss_map >> id_i;
 
 		// Declare single_landmark:
-		Map::MapLandmark single_landmark_temp;
+		Map::single_landmark_s single_landmark_temp;
 
 		// Set values
-		single_landmark_temp.id = id_i;
-		single_landmark_temp.x  = landmark_x_f;
-		single_landmark_temp.y  = landmark_y_f;
+		single_landmark_temp.id_i = id_i;
+		single_landmark_temp.x_f  = landmark_x_f;
+		single_landmark_temp.y_f  = landmark_y_f;
 
 		// Add to landmark list of map:
-		map.landmark_list_.push_back(single_landmark_temp);
+		map.landmark_list.push_back(single_landmark_temp);
 	}
 	return true;
 }
@@ -128,7 +113,7 @@ inline bool ReadMapData(std::string filename, Map& map) {
  * @param filename Name of file containing control measurements.
  * @output True if opening and reading file was successful
  */
-inline bool ReadControlData(std::string filename, std::vector<Control>& position_meas) {
+inline bool read_control_data(std::string filename, std::vector<control_s>& position_meas) {
 
 	// Get file of position measurements:
 	std::ifstream in_file_pos(filename.c_str(),std::ifstream::in);
@@ -149,7 +134,7 @@ inline bool ReadControlData(std::string filename, std::vector<Control>& position
 		double velocity, yawrate;
 
 		// Declare single control measurement:
-		Control meas;
+		control_s meas;
 
 		//read data from line to values:
 
@@ -171,7 +156,7 @@ inline bool ReadControlData(std::string filename, std::vector<Control>& position
  * @param filename Name of file containing ground truth.
  * @output True if opening and reading file was successful
  */
-inline bool ReadGroundTruthData(std::string filename, std::vector<GroundTruth>& gt) {
+inline bool read_gt_data(std::string filename, std::vector<ground_truth>& gt) {
 
 	// Get file of position measurements:
 	std::ifstream in_file_pos(filename.c_str(),std::ifstream::in);
@@ -192,7 +177,7 @@ inline bool ReadGroundTruthData(std::string filename, std::vector<GroundTruth>& 
 		double x, y, azimuth;
 
 		// Declare single ground truth:
-		GroundTruth single_gt; 
+		ground_truth single_gt; 
 
 		//read data from line to values:
 		iss_pos >> x;
@@ -214,7 +199,7 @@ inline bool ReadGroundTruthData(std::string filename, std::vector<GroundTruth>& 
  * @param filename Name of file containing landmark observation measurements.
  * @output True if opening and reading file was successful
  */
-inline bool ReadLandmarkData(std::string filename, std::vector<LandmarkObs>& observations) {
+inline bool read_landmark_data(std::string filename, std::vector<LandmarkObs>& observations) {
 
 	// Get file of landmark measurements:
 	std::ifstream in_file_obs(filename.c_str(),std::ifstream::in);

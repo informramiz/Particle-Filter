@@ -1,8 +1,10 @@
+//#include <openssl/opensslv.h>
 #include <uWS/uWS.h>
 #include <iostream>
 #include "json.hpp"
 #include <math.h>
 #include "particle_filter.h"
+#include "helper_functions.h"
 
 using namespace std;
 
@@ -38,7 +40,7 @@ int main()
 
   // Read map data
   Map map;
-  if (!read_map_data("../data/map_data.txt", map)) {
+  if (!ReadMapData("../data/map_data.txt", map)) {
 	  cout << "Error: Could not open map file" << endl;
 	  return -1;
   }
@@ -136,9 +138,9 @@ int main()
           msgJson["best_particle_theta"] = best_particle.theta;
 
           //Optional message data used for debugging particle's sensing and associations
-          msgJson["best_particle_associations"] = pf.getAssociations(best_particle);
-          msgJson["best_particle_sense_x"] = pf.getSenseX(best_particle);
-          msgJson["best_particle_sense_y"] = pf.getSenseY(best_particle);
+//          msgJson["best_particle_associations"] = pf.getAssociations(best_particle);
+//          msgJson["best_particle_sense_x"] = pf.getSenseX(best_particle);
+//          msgJson["best_particle_sense_y"] = pf.getSenseY(best_particle);
 
           auto msg = "42[\"best_particle\"," + msgJson.dump() + "]";
           // std::cout << msg << std::endl;

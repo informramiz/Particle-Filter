@@ -40,7 +40,7 @@ int main()
 
   // Read map data
   Map map;
-  if (!ReadMapData("../data/map_data.txt", map)) {
+  if (!ReadMapData("data/map_data.txt", map)) {
 	  cout << "Error: Could not open map file" << endl;
 	  return -1;
   }

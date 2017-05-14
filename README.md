@@ -8,6 +8,10 @@ Cumulative mean weighted error: x 0.111211 y 0.10463 yaw 0.00367565
 Runtime (sec): 1.23799
 ```
 
+## Math behind Particle Filters
+
+I took some rough [notes](https://drive.google.com/open?id=0Bxv9kPZMr-zbM3dDQXZmS01kcGs) while studying particle filters.
+
 ## Running the Code
 Once you have this repository on your machine, `cd` into the repository's root directory and run the following commands from the command line:
 
